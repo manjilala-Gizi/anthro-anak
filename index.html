@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AntroAnak – Status Gizi Anak WHO–CDC</title>
+<meta name="description" content="Penilaian status gizi anak 0–20 tahun dengan WHO 2006, WHO 2007, dan CDC 2000 mengikuti rekomendasi IDAI: z-score, persentil, IMT/U, dan %BB ideal.">
+<meta name="theme-color" content="#00897f">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="app-head">
+  <div class="brand">
+    <img src="assets/logo-poltekkes-makassar.png" alt="Logo Kemenkes Poltekkes Makassar" class="brand-logo">
+  </div>
+  <div class="app-title">
+    <h1>AntroAnak <span class="h1-sub">Status Gizi Anak <span class="nowrap">WHO–CDC</span></span></h1>
+    <p>0–20 tahun · WHO 2006 untuk &lt; 5 tahun, CDC 2000 untuk ≥ 5 tahun (rekomendasi IDAI)</p>
+  </div>
+  <div class="head-actions">
+    <button id="btnGuide" class="btn btn-ghost small" type="button" aria-haspopup="dialog">Panduan</button>
+    <button id="btnInstall" class="btn btn-ghost small" type="button" hidden>Pasang di HP</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="welcome" class="welcome" hidden>
+    <p><b>Baru pertama kali memakai AntroAnak?</b> Baca panduan singkatnya dulu, sekitar 2 menit.</p>
+    <div class="welcome-actions">
+      <button type="button" id="btnWelcomeOpen" class="btn btn-primary small">Buka panduan</button>
+      <button type="button" id="btnWelcomeClose" class="btn btn-ghost small">Nanti saja</button>
+    </div>
+  </div>
+  <form id="form" class="panel" autocomplete="off" novalidate>
+    <div class="panel-head">
+      <h2>Data pengukuran</h2>
+      <span class="contoh">Isi contoh: <button type="button" id="btnContohBalita" class="linkish">balita</button> · <button type="button" id="btnContohAnak" class="linkish">anak sekolah</button></span>
+    </div>
+
+    <div class="grid">
+      <label class="field span2"><span>Nama anak</span>
+        <input id="nama" type="text" placeholder="mis. Andi Saputra">
+      </label>
+      <label class="field"><span>No. RM / ID</span>
+        <input id="norm" type="text" placeholder="opsional">
+      </label>
+      <div class="field"><span>Jenis kelamin</span>
+        <div class="seg" role="radiogroup" aria-label="Jenis kelamin">
+          <input type="radio" name="jk" id="jkL" value="m" checked><label for="jkL">Laki-laki</label>
+          <input type="radio" name="jk" id="jkP" value="f"><label for="jkP">Perempuan</label>
+        </div>
+      </div>
+      <label class="field"><span>Tanggal lahir</span>
+        <input id="tglLahir" type="date" required>
+      </label>
+      <label class="field"><span>Tanggal ukur</span>
+        <input id="tglUkur" type="date" required>
+      </label>
+      <label class="field"><span>Berat badan <span class="unit">kg</span></span>
+        <input id="bb" type="number" inputmode="decimal" step="0.01" min="0.5" max="250" placeholder="0,0" required>
+      </label>
+      <label class="field"><span>Panjang / tinggi badan <span class="unit">cm</span></span>
+        <input id="tb" type="number" inputmode="decimal" step="0.1" min="30" max="230" placeholder="0,0" required>
+      </label>
+      <div class="field"><span>Cara ukur</span>
+        <div class="seg" role="radiogroup" aria-label="Cara ukur">
+          <input type="radio" name="cara" id="caraBaring" value="baring"><label for="caraBaring">Berbaring (PB)</label>
+          <input type="radio" name="cara" id="caraBerdiri" value="berdiri" checked><label for="caraBerdiri">Berdiri (TB)</label>
+        </div>
+      </div>
+      <label class="field"><span>Lingkar kepala <span class="unit">cm</span></span>
+        <input id="lk" type="number" inputmode="decimal" step="0.1" min="25" max="60" placeholder="opsional, untuk balita">
+      </label>
+      <label class="field span2"><span>Nama petugas</span>
+        <input id="petugas" type="text" placeholder="opsional, tercetak di laporan">
+      </label>
+    </div>
+
+    <label class="check" for="pembanding">
+      <input type="checkbox" id="pembanding">
+      <span><b>Tampilkan pembanding</b><br><small>Balita: tampilkan juga hasil CDC 2000. Umur ≥ 5 tahun: tampilkan juga WHO 2007.</small></span>
+    </label>
+
+    <p id="formMsg" class="msg" role="alert" hidden></p>
+    <div class="actions">
+      <button type="submit" class="btn btn-primary">Hitung status gizi</button>
+      <button type="reset" class="btn btn-ghost">Kosongkan</button>
+    </div>
+  </form>
+
+  <section id="hasil" hidden>
+    <div class="toolbar">
+      <span class="toolbar-label">Simpan hasil</span>
+      <button id="btnPdf" class="btn btn-primary small" type="button">Unduh PDF</button>
+      <button id="btnJpg" class="btn btn-lime small" type="button">Unduh JPG</button>
+      <button id="btnShare" class="btn btn-ghost small" type="button" hidden>Bagikan</button>
+      <button id="btnPrint" class="btn btn-ghost small" type="button">Cetak</button>
+    </div>
+
+    <!-- Lembar laporan: selalu bernuansa kertas putih agar hasil cetak konsisten -->
+    <article id="report" class="paper">
+      <div class="paper-head">
+        <img src="assets/logo-poltekkes-makassar.png" alt="Logo Kemenkes Poltekkes Makassar">
+        <div>
+          <div class="paper-title">Hasil Penilaian Status Gizi Anak <span class="paper-app">· AntroAnak</span></div>
+          <div class="paper-sub" id="modeNote"></div>
+        </div>
+      </div>
+
+      <dl id="identitas" class="ident"></dl>
+      <div id="catatanUkur" class="note" hidden></div>
+
+      <div class="ref-badge" id="refBadge"></div>
+      <h3 class="sec">Indikator antropometri · hasil utama</h3>
+      <div class="tbl-wrap"><table class="tbl" id="tblMain"></table></div>
+
+      <h3 class="sec">Persentase berat badan ideal (%BBI)</h3>
+      <div id="bbiBox" class="bbi"></div>
+
+      <h3 class="sec">Grafik pertumbuhan</h3>
+      <div id="charts" class="charts"></div>
+
+      <section id="cmpSec" class="cmp" hidden>
+        <h3 class="sec" id="cmpTitle"></h3>
+        <p class="cmp-sub" id="cmpSub"></p>
+        <div class="tbl-wrap"><table class="tbl" id="tblCmp"></table></div>
+        <p class="cmp-sub" id="cmpBbi"></p>
+        <div id="cmpNotes" class="note" hidden></div>
+      </section>
+
+      <div class="paper-foot">
+        <p id="footNote"></p>
+        <p class="credit">AntroAnak · Aplikasi ini dibuat oleh <b>Manjilala</b> – Poltekkes Kemenkes Makassar · <span id="printedAt"></span></p>
+      </div>
+    </article>
+  </section>
+
+  <section class="panel about">
+    <h2>Tentang AntroAnak</h2>
+    <p>AntroAnak adalah aplikasi penilaian status gizi anak umur 0–20 tahun untuk dokter, dietisien, nutrisionis, dan petugas kesehatan. Referensi dipilih otomatis sesuai rekomendasi IDAI: WHO 2006 untuk anak di bawah 5 tahun dan CDC 2000 untuk anak 5 tahun ke atas. Hasilnya berupa z-score, persentil, klasifikasi, %BB ideal, dan grafik pertumbuhan yang bisa disimpan sebagai PDF atau JPG.</p>
+    <button type="button" class="btn btn-ghost small" id="btnGuide2">Baca panduan penggunaan</button>
+    <p class="credit-strong">
+      <img src="icons/icon-192.png" alt="" width="36" height="36">
+      <span>Aplikasi ini dibuat oleh <b>Manjilala</b><br>Poltekkes Kemenkes Makassar</span>
+    </p>
+  </section>
+</main>
+
+
+<dialog id="guide" class="guide" aria-labelledby="guideTitle">
+  <div class="guide-head">
+    <h2 id="guideTitle">Panduan AntroAnak</h2>
+    <button type="button" class="btn btn-ghost small" id="btnGuideClose" aria-label="Tutup panduan">Tutup</button>
+  </div>
+  <div class="guide-body">
+
+    <details open>
+      <summary>Apa itu AntroAnak?</summary>
+      <div class="acc">
+        <p>AntroAnak menilai status gizi anak umur 0–20 tahun tanpa perlu memplot manual di grafik kertas. Aplikasi menghitung z-score dan persentil langsung dari tabel resmi WHO dan CDC, lalu menampilkan klasifikasi, %BB ideal, dan grafik pertumbuhan.</p>
+        <p><b>Referensi dipilih otomatis sesuai rekomendasi IDAI:</b></p>
+        <ul>
+          <li><b>Umur &lt; 5 tahun:</b> WHO 2006, klasifikasi Permenkes No. 2 Tahun 2020 (z-score).</li>
+          <li><b>Umur ≥ 5 tahun:</b> CDC 2000, klasifikasi persentil CDC.</li>
+        </ul>
+        <p>Semua perhitungan berlangsung di HP. Data anak tidak dikirim ke server mana pun dan tidak disimpan setelah halaman ditutup.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Cara menggunakan</summary>
+      <div class="acc">
+        <ol>
+          <li><b>Isi identitas anak.</b> Nama dan No. RM boleh dikosongkan; keduanya hanya dicetak di laporan.</li>
+          <li><b>Pilih jenis kelamin.</b> Hasil sangat dipengaruhi pilihan ini, jadi pastikan benar.</li>
+          <li><b>Isi tanggal lahir dan tanggal ukur.</b> Tanggal ukur otomatis terisi hari ini; ubah bila data diukur di hari lain. Umur dihitung sampai hitungan hari.</li>
+          <li><b>Isi berat badan (kg) dan panjang/tinggi badan (cm).</b> Gunakan titik atau koma untuk desimal, misalnya 8.2 atau 74,5.</li>
+          <li><b>Pilih cara ukur</b> sesuai kenyataan di lapangan: berbaring (panjang badan) atau berdiri (tinggi badan). Aplikasi akan mengoreksi otomatis bila cara ukur tidak sesuai umur.</li>
+          <li><b>Lingkar kepala</b> diisi bila diukur, terutama untuk balita.</li>
+          <li>Centang <b>Tampilkan pembanding</b> bila ingin melihat hasil referensi lain untuk anak yang sama.</li>
+          <li>Ketuk <b>Hitung status gizi</b>. Hasil muncul di bawah form.</li>
+        </ol>
+        <p class="tip">Ingin mencoba dulu? Ketuk <b>Isi contoh: balita</b> atau <b>anak sekolah</b> di atas form.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Panjang badan atau tinggi badan?</summary>
+      <div class="acc">
+        <ul>
+          <li><b>Anak &lt; 2 tahun</b> diukur <b>berbaring</b> (panjang badan) dengan infantometer/length board.</li>
+          <li><b>Anak ≥ 2 tahun</b> diukur <b>berdiri</b> (tinggi badan) dengan microtoise/stadiometer.</li>
+          <li>Bila tidak sesuai, misalnya anak 1 tahun terpaksa diukur berdiri, pilih cara ukur yang benar-benar dilakukan. Aplikasi menambah 0,7 cm (berdiri → berbaring) atau mengurangi 0,7 cm (berbaring → berdiri), sesuai aturan WHO. Koreksi ini dicatat di lembar hasil.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>Cara membaca hasil</summary>
+      <div class="acc">
+        <ul>
+          <li><b>Z-score</b> menunjukkan jarak ukuran anak dari median, dalam satuan simpangan baku (SD). Nilai 0 berarti tepat di median; −2 berarti 2 SD di bawah median.</li>
+          <li><b>Persentil</b> menunjukkan posisi anak dibanding 100 anak seusianya. Persentil 10 berarti 10% anak berada di bawahnya.</li>
+          <li>Untuk <b>balita (WHO)</b>, klasifikasi dibaca dari z-score. Untuk <b>anak ≥ 5 tahun (CDC)</b>, klasifikasi dibaca dari persentil. Kolom yang dipakai untuk klasifikasi dicetak tebal.</li>
+          <li><b>Warna label:</b> <span class="chip ok">hijau</span> normal, <span class="chip warn">kuning</span> perlu perhatian, <span class="chip bad">merah</span> masalah gizi, <span class="chip info">biru</span> informasi (misalnya tinggi di atas normal).</li>
+          <li><b>%BB ideal (%BBI)</b> membandingkan berat aktual dengan berat median anak setinggi itu. Kategorinya: &lt;70% gizi buruk, 70–&lt;90% gizi kurang, 90–110% gizi baik, &gt;110–120% overweight, &gt;120% obesitas.</li>
+          <li><b>Grafik pertumbuhan</b> menampilkan titik anak (bulatan kuning) di antara garis referensi. Garis hijau tebal adalah median; garis merah adalah batas −2/+2 SD (WHO) atau P5/P95 (CDC).</li>
+          <li>Bila muncul <b>catatan kuning</b> tentang z-score di luar ±5 SD, periksa ulang tanggal lahir, satuan, dan hasil pengukuran.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>Tentang hasil pembanding</summary>
+      <div class="acc">
+        <p>Hasil pembanding menampilkan penilaian anak yang sama dengan referensi lain: CDC 2000 untuk balita, WHO 2007 untuk anak 5–19 tahun.</p>
+        <p>Klasifikasi bisa berbeda antarreferensi karena populasi acuannya berbeda. Contohnya, bayi yang normal menurut WHO bisa tergolong BB kurang menurut CDC. Pembanding berguna untuk memahami perbedaan hasil rujukan Puskesmas (WHO) dan RS, tetapi <b>yang dicatat di rekam medis tetap hasil utama</b>.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Menyimpan, membagikan, dan mencetak</summary>
+      <div class="acc">
+        <ul>
+          <li><b>Unduh PDF:</b> lembar hasil ukuran A4, tersimpan di folder Unduhan (Download).</li>
+          <li><b>Unduh JPG:</b> gambar lembar hasil, praktis untuk dikirim lewat chat.</li>
+          <li><b>Bagikan:</b> langsung kirim JPG ke WhatsApp atau aplikasi lain. Tombol ini hanya muncul di HP yang mendukung.</li>
+          <li><b>Cetak:</b> kirim ke printer, atau pilih "Simpan sebagai PDF" di menu cetak.</li>
+        </ul>
+        <p class="tip">Karena data tidak disimpan di aplikasi, unduh atau bagikan hasil sebelum menutup halaman.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Memasang di HP dan memakai tanpa internet</summary>
+      <div class="acc">
+        <ul>
+          <li><b>Android (Chrome):</b> ketuk tombol <b>Pasang di HP</b> di pojok kanan atas, atau menu ⋮ → <b>Instal aplikasi / Tambahkan ke layar utama</b>.</li>
+          <li><b>iPhone (Safari):</b> ketuk ikon <b>Bagikan</b> → <b>Tambahkan ke Layar Utama</b>.</li>
+          <li>Setelah dibuka sekali dengan internet, AntroAnak tetap bisa dipakai tanpa sinyal.</li>
+          <li>Pembaruan aplikasi diambil otomatis saat HP tersambung internet. Tutup lalu buka kembali aplikasi untuk memakai versi terbaru.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>Batasan dan sumber data</summary>
+      <div class="acc">
+        <ul>
+          <li>AntroAnak adalah alat bantu skrining dan tidak menggantikan penilaian klinis dokter atau dietisien.</li>
+          <li>Rentang yang dapat dihitung: umur 0–20 tahun; BB/PB WHO 45–110 cm; BB/TB WHO 65–120 cm; BB/PB CDC 45–103,5 cm; BB/TB CDC 77–121,5 cm.</li>
+          <li>Anak dengan edema, kelainan bawaan, atau kondisi khusus (misalnya sindrom Down, prematur) memerlukan grafik dan penilaian khusus.</li>
+          <li>Sumber: tabel LMS resmi CDC 2000 (NCHS/CDC), WHO Child Growth Standards 2006, WHO Growth Reference 2007, serta Permenkes No. 2 Tahun 2020 tentang Standar Antropometri Anak.</li>
+        </ul>
+      </div>
+    </details>
+
+    <p class="guide-credit">AntroAnak · dibuat oleh <b>Manjilala</b> – Poltekkes Kemenkes Makassar</p>
+  </div>
+</dialog>
+
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script src="js/cdc2000-data.js"></script>
+<script src="js/who-data.js"></script>
+<script src="js/growth.js"></script>
+<script src="js/app.js"></script>
+<script src="vendor/html2canvas.min.js" defer></script>
+<script src="vendor/jspdf.umd.min.js" defer></script>
+</body>
+</html>

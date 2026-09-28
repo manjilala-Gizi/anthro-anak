@@ -1,0 +1,32 @@
+{
+  "name": "AntroAnak – Status Gizi Anak WHO–CDC",
+  "short_name": "AntroAnak",
+  "description": "Penilaian status gizi anak 0–20 tahun: WHO 2006 untuk < 5 tahun dan CDC 2000 untuk ≥ 5 tahun (rekomendasi IDAI). Dibuat oleh Manjilala – Poltekkes Kemenkes Makassar.",
+  "lang": "id",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eef5f4",
+  "theme_color": "#00897f",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
