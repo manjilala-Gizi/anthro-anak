@@ -24,7 +24,7 @@ Aplikasi web (PWA) untuk menilai status gizi anak 0–20 tahun. Referensi dipili
 ## Cara menerbitkan di GitHub Pages
 
 1. Masuk ke GitHub, lalu buat repository baru, dengan nama **`antro-anak`** (pilih **Public**).
-2. Klik **Add file → Upload files**, lalu seret **seluruh isi** folder ini (bukan foldernya). Pastikan `index.html` berada di akar repository. Klik **Commit changes**.
+2. Klik **Add file → Upload files**, lalu klik **choose your files**, pilih **semua file** di folder ini (Ctrl+A), dan klik **Open**. Pastikan ada 17 file (termasuk `.nojekyll`), lalu klik **Commit changes**.
 3. Buka **Settings → Pages**. Pada *Source*, pilih **Deploy from a branch**, branch **main**, folder **/ (root)**, lalu **Save**.
 4. Tunggu 1–2 menit. Alamat aplikasi akan muncul, misalnya `https://NAMA-AKUN.github.io/antro-anak/`.
 
@@ -78,18 +78,22 @@ Setiap kali ada file yang diubah, naikkan nomor `VERSION` di `sw.js` (misalnya `
 - de Onis M, dkk. Development of a WHO growth reference for school-aged children and adolescents. *Bull WHO* 85:660–667, 2007.
 - Peraturan Menteri Kesehatan RI No. 2 Tahun 2020 tentang Standar Antropometri Anak.
 
-## Struktur folder
+## Daftar file
+
+Semua file diletakkan sejajar (tanpa subfolder) agar mudah diunggah lewat tombol **Add file → Upload files** di GitHub: cukup pilih semua file sekaligus.
 
 ```
-index.html            halaman utama
-manifest.json, sw.js  pengaturan PWA (pasang di HP & mode offline)
-css/style.css         tampilan
-js/cdc2000-data.js    tabel LMS CDC 2000
-js/who-data.js        tabel LMS WHO 2006 & WHO 2007
-js/growth.js          mesin perhitungan
-js/app.js             antarmuka, grafik, ekspor PDF/JPG
-vendor/               html2canvas & jsPDF (untuk PDF/JPG, disimpan lokal agar bisa offline)
-assets/, icons/       logo & ikon aplikasi
+index.html               halaman utama
+style.css                tampilan
+app.js                   antarmuka, grafik, panduan, ekspor PDF/JPG
+growth.js                mesin perhitungan (WHO 2006, WHO 2007, CDC 2000)
+cdc2000-data.js          tabel LMS CDC 2000
+who-data.js              tabel LMS WHO 2006 & WHO 2007
+html2canvas.min.js       pustaka ekspor gambar (MIT)
+jspdf.umd.min.js         pustaka ekspor PDF (MIT)
+manifest.json, sw.js     pengaturan PWA (pasang di HP & mode offline)
+logo-poltekkes-makassar.png, icon-*.png, maskable-512.png, apple-touch-icon.png   logo & ikon
+.nojekyll                penanda untuk GitHub Pages (file tersembunyi)
 ```
 
 ## Catatan

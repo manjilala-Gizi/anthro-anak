@@ -1,12 +1,12 @@
 /* Service worker: menyimpan seluruh file aplikasi agar bisa dipakai tanpa internet.
    Naikkan VERSION setiap kali ada perubahan file supaya HP petugas mengambil versi baru. */
-const VERSION = 'antro-anak-v2.2.0';
+const VERSION = 'antro-anak-v2.3.0';
 const FILES = [
-  './', 'index.html', 'manifest.json', 'css/style.css',
-  'js/cdc2000-data.js', 'js/who-data.js', 'js/growth.js', 'js/app.js',
-  'vendor/html2canvas.min.js', 'vendor/jspdf.umd.min.js',
-  'assets/logo-poltekkes-makassar.png',
-  'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-512.png', 'icons/apple-touch-icon.png'
+  './', 'index.html', 'manifest.json', 'style.css',
+  'cdc2000-data.js', 'who-data.js', 'growth.js', 'app.js',
+  'html2canvas.min.js', 'jspdf.umd.min.js',
+  'logo-poltekkes-makassar.png',
+  'icon-192.png', 'icon-512.png', 'maskable-512.png', 'apple-touch-icon.png'
 ];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

@@ -7,14 +7,14 @@
 <meta name="description" content="Penilaian status gizi anak 0–20 tahun dengan WHO 2006, WHO 2007, dan CDC 2000 mengikuti rekomendasi IDAI: z-score, persentil, IMT/U, dan %BB ideal.">
 <meta name="theme-color" content="#00897f">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="app-head">
   <div class="brand">
-    <img src="assets/logo-poltekkes-makassar.png" alt="Logo Kemenkes Poltekkes Makassar" class="brand-logo">
+    <img src="logo-poltekkes-makassar.png" alt="Logo Kemenkes Poltekkes Makassar" class="brand-logo">
   </div>
   <div class="app-title">
     <h1>AntroAnak <span class="h1-sub">Status Gizi Anak <span class="nowrap">WHO–CDC</span></span></h1>
@@ -103,7 +103,7 @@
     <!-- Lembar laporan: selalu bernuansa kertas putih agar hasil cetak konsisten -->
     <article id="report" class="paper">
       <div class="paper-head">
-        <img src="assets/logo-poltekkes-makassar.png" alt="Logo Kemenkes Poltekkes Makassar">
+        <img src="logo-poltekkes-makassar.png" alt="Logo Kemenkes Poltekkes Makassar">
         <div>
           <div class="paper-title">Hasil Penilaian Status Gizi Anak <span class="paper-app">· AntroAnak</span></div>
           <div class="paper-sub" id="modeNote"></div>
@@ -143,7 +143,7 @@
     <p>AntroAnak adalah aplikasi penilaian status gizi anak umur 0–20 tahun untuk dokter, dietisien, nutrisionis, dan petugas kesehatan. Referensi dipilih otomatis sesuai rekomendasi IDAI: WHO 2006 untuk anak di bawah 5 tahun dan CDC 2000 untuk anak 5 tahun ke atas. Hasilnya berupa z-score, persentil, klasifikasi, %BB ideal, dan grafik pertumbuhan yang bisa disimpan sebagai PDF atau JPG.</p>
     <button type="button" class="btn btn-ghost small" id="btnGuide2">Baca panduan penggunaan</button>
     <p class="credit-strong">
-      <img src="icons/icon-192.png" alt="" width="36" height="36">
+      <img src="icon-192.png" alt="" width="36" height="36">
       <span>Aplikasi ini dibuat oleh <b>Manjilala</b><br>Poltekkes Kemenkes Makassar</span>
     </p>
   </section>
@@ -264,11 +264,11 @@
 
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="js/cdc2000-data.js"></script>
-<script src="js/who-data.js"></script>
-<script src="js/growth.js"></script>
-<script src="js/app.js"></script>
-<script src="vendor/html2canvas.min.js" defer></script>
-<script src="vendor/jspdf.umd.min.js" defer></script>
+<script src="cdc2000-data.js"></script>
+<script src="who-data.js"></script>
+<script src="growth.js"></script>
+<script src="app.js"></script>
+<script src="html2canvas.min.js" defer></script>
+<script src="jspdf.umd.min.js" defer></script>
 </body>
 </html>
