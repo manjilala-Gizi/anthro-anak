@@ -239,3 +239,18 @@ img { max-width: 100%; }
 .tbl small.near::before { content: "◆ "; }
 .acc .near-ex { color: #8a5a00; }
 .tbl th { white-space: nowrap; }
+
+/* ===== Isian tanggal 3 kotak ===== */
+.dt-row { display: grid; grid-template-columns: 4.2em minmax(0, 1fr) 5.4em; gap: 8px; align-items: center; }
+.dt-row:has(.dt-today) { grid-template-columns: 4.2em minmax(0, 1fr) 5.4em auto; }
+.dt-row input, .dt-row select {
+  width: 100%; min-width: 0; font: 500 1rem var(--font); color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 10px; min-height: 44px; text-align: center; font-variant-numeric: tabular-nums;
+}
+.dt-row select { text-align: left; padding-right: 6px; }
+.dt-row input:focus, .dt-row select:focus { outline: 2px solid var(--teal); outline-offset: 1px; border-color: transparent; }
+.dt-today { min-height: 44px; white-space: nowrap; }
+.dt-info { font-weight: 500; font-size: .8rem; min-height: 1.2em; color: var(--muted); }
+.dt-info.ok { color: var(--teal-strong); font-weight: 600; }
+.dt-info.bad { color: var(--danger); font-weight: 600; }
+@media (max-width: 520px) { .dt-row:has(.dt-today) { grid-template-columns: 4.2em minmax(0, 1fr) 5.4em; } .dt-today { grid-column: 1 / -1; justify-self: start; min-height: 36px; } }

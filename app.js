@@ -16,13 +16,61 @@
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function toast(t) { var el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(function () { el.hidden = true; }, 2800); }
 
-  $('tglUkur').value = todayISO();
+  /* ===== Isian tanggal: tanggal / bulan / tahun ===== */
+  var BLN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+  function dtParts(id) { return { d: $(id + '_d'), m: $(id + '_m'), y: $(id + '_y'), h: $(id), info: $(id + '_info') }; }
+  function setDate(id, iso) {
+    var f = dtParts(id);
+    if (!iso) { f.d.value = ''; f.m.value = ''; f.y.value = ''; f.h.value = ''; }
+    else { var p = iso.split('-'); f.d.value = String(+p[2]); f.m.value = String(+p[1]); f.y.value = p[0]; f.h.value = iso; }
+    refreshDates();
+  }
+  // Mengembalikan {iso} bila valid, {err} bila salah, {} bila belum lengkap
+  function readDate(id) {
+    var f = dtParts(id), d = f.d.value.trim(), m = f.m.value, y = f.y.value.trim();
+    if (!d && !m && !y) return {};
+    if (!d || !m || y.length < 4) return { err: 'belum lengkap' };
+    var dd = +d, mm = +m, yy = +y;
+    if (!(dd >= 1 && dd <= 31)) return { err: 'tanggal harus 1–31' };
+    var dt = new Date(yy, mm - 1, dd);
+    if (dt.getFullYear() !== yy || dt.getMonth() !== mm - 1 || dt.getDate() !== dd) return { err: BLN[mm - 1] + ' ' + yy + ' tidak punya tanggal ' + dd };
+    var now = new Date(); now.setHours(23, 59, 59, 999);
+    if (dt > now) return { err: 'tanggal ini belum terjadi' };
+    if (yy < 1990) return { err: 'tahun terlalu jauh' };
+    return { iso: yy + '-' + String(mm).padStart(2, '0') + '-' + String(dd).padStart(2, '0'), date: dt };
+  }
+  function refreshDates() {
+    var L = readDate('tglLahir'), U = readDate('tglUkur');
+    $('tglLahir').value = L.iso || ''; $('tglUkur').value = U.iso || '';
+    var iL = $('tglLahir_info'), iU = $('tglUkur_info');
+    iU.className = 'dt-info'; iU.textContent = U.err ? 'Tanggal ukur ' + U.err + '.' : '';
+    if (U.err && U.err !== 'belum lengkap') iU.className = 'dt-info bad';
+    iL.className = 'dt-info';
+    if (L.err) { iL.textContent = 'Tanggal lahir ' + L.err + '.'; if (L.err !== 'belum lengkap') iL.className = 'dt-info bad'; return; }
+    if (L.iso && U.iso) {
+      if (L.date > U.date) { iL.textContent = 'Tanggal lahir lebih akhir dari tanggal ukur.'; iL.className = 'dt-info bad'; return; }
+      var ap = G.ageParts ? G.ageParts(L.date, U.date) : null;
+      var days = G.ageDays(L.date, U.date), mo = days / 30.4375;
+      if (!ap) { var y = U.date.getFullYear() - L.date.getFullYear(), m = U.date.getMonth() - L.date.getMonth(), d = U.date.getDate() - L.date.getDate();
+        if (d < 0) { m -= 1; d += new Date(U.date.getFullYear(), U.date.getMonth(), 0).getDate(); } if (m < 0) { y -= 1; m += 12; } ap = { y: y, m: m, d: d }; }
+      iL.textContent = 'Umur saat diukur: ' + ap.y + ' th ' + ap.m + ' bln ' + ap.d + ' hr (' + fmt(mo, 1) + ' bln) · ' + (mo < 60 ? 'dinilai dengan WHO 2006' : mo <= 240.5 ? 'dinilai dengan CDC 2000' : 'di atas 20 tahun');
+      iL.className = 'dt-info ok' + (mo > 240.5 ? ' bad' : '');
+    } else { iL.textContent = ''; }
+  }
+  ['tglLahir', 'tglUkur'].forEach(function (id) {
+    var f = dtParts(id);
+    f.d.addEventListener('input', function () { f.d.value = f.d.value.replace(/\D/g, '').slice(0, 2); if (f.d.value.length === 2 || +f.d.value > 3) f.m.focus(); refreshDates(); });
+    f.m.addEventListener('change', function () { refreshDates(); if (f.m.value) f.y.focus(); });
+    f.y.addEventListener('input', function () { f.y.value = f.y.value.replace(/\D/g, '').slice(0, 4); refreshDates(); });
+  });
+  document.querySelectorAll('.dt-today').forEach(function (b) { b.addEventListener('click', function () { setDate(b.getAttribute('data-for'), todayISO()); }); });
+  setDate('tglUkur', todayISO());
 
   function contoh(o) {
     $('nama').value = o.nama; $('norm').value = o.norm;
     $(o.jk === 'm' ? 'jkL' : 'jkP').checked = true;
     var b = new Date(); b.setMonth(b.getMonth() - o.bulan);
-    $('tglLahir').value = isoOf(b); $('tglUkur').value = todayISO();
+    setDate('tglLahir', isoOf(b)); setDate('tglUkur', todayISO());
     $('bb').value = o.bb; $('tb').value = o.tb; $(o.cara === 'baring' ? 'caraBaring' : 'caraBerdiri').checked = true;
     $('lk').value = o.lk || ''; $('petugas').value = '';
     $('form').requestSubmit();
@@ -31,7 +79,7 @@
   $('btnContohAnak').addEventListener('click', function () { contoh({ nama: 'Contoh: Andi', norm: 'RM-000123', jk: 'm', bulan: 100, bb: '34.5', tb: '128.0', cara: 'berdiri' }); });
 
   $('form').addEventListener('reset', function () {
-    setTimeout(function () { $('tglUkur').value = todayISO(); $('hasil').hidden = true; $('formMsg').hidden = true; }, 0);
+    setTimeout(function () { setDate('tglLahir', ''); setDate('tglUkur', todayISO()); $('hasil').hidden = true; $('formMsg').hidden = true; }, 0);
   });
 
   $('form').addEventListener('submit', function (e) {
@@ -39,8 +87,9 @@
     var msg = [];
     var birth = parseDate($('tglLahir').value), meas = parseDate($('tglUkur').value);
     var bb = num('bb'), tb = num('tb'), lk = num('lk');
-    if (!birth) msg.push('Isi tanggal lahir.');
-    if (!meas) msg.push('Isi tanggal ukur.');
+    var eL = readDate('tglLahir'), eU = readDate('tglUkur');
+    if (!birth) msg.push(eL.err && eL.err !== 'belum lengkap' ? 'Tanggal lahir ' + eL.err + '.' : 'Lengkapi tanggal lahir (tanggal, bulan, tahun).');
+    if (!meas) msg.push(eU.err && eU.err !== 'belum lengkap' ? 'Tanggal ukur ' + eU.err + '.' : 'Lengkapi tanggal ukur (tanggal, bulan, tahun).');
     if (!bb || bb < 0.5 || bb > 250) msg.push('Berat badan harus antara 0,5 dan 250 kg.');
     if (!tb || tb < 30 || tb > 230) msg.push('Panjang/tinggi badan harus antara 30 dan 230 cm.');
     if (lk !== null && (lk < 25 || lk > 60)) msg.push('Lingkar kepala harus antara 25 dan 60 cm, atau dikosongkan.');

@@ -376,6 +376,6 @@
   root.Growth = {
     IND: IND, REF: REF, evaluate: evaluate, chartSpec: chartSpec, chartTitle: chartTitle,
     zLMS: zLMS, xLMS: xLMS, zRestricted: zRestricted, normCdf: normCdf, cdcLMS: cdcLMS, whoLMS: whoLMS,
-    ageDays: ageDays, fmt: fmt, umurTeks: umurTeks, evalWHO07: evalWHO07
+    ageDays: ageDays, ageParts: ageParts, fmt: fmt, umurTeks: umurTeks, evalWHO07: evalWHO07
   };
 })(typeof window !== 'undefined' ? window : globalThis);
