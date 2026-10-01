@@ -70,10 +70,12 @@
         zTxt = (a.z >= 0 ? '+' : '−') + fmt(Math.abs(a.z), 2);
       }
       var extra = '';
-      if (r.extra && r.extra.pctP95 && a && a.p >= 85) extra = '<small class="muted">' + fmt(r.extra.pctP95, 0) + '% dari P95</small>';
+      if (r.extra && r.extra.pctP95 && a && a.p >= 85) extra += '<small class="muted">' + fmt(r.extra.pctP95, 0) + '% dari P95</small>';
+      if (r.near) extra += '<small class="near">Dekat batas klasifikasi: selisih kecil pengukuran atau umur dapat mengubah kategori</small>';
+      var med = (a && out.ref.id === 'cdc' && r.key !== 'cdc:bmi') ? '<small class="muted">' + fmt(a.pctMed, 1) + '% median</small>' : '';
       var zFirst = out.ref.skala === 'z';
       return '<tr><td class="ind">' + r.ind.nama + '<small>' + r.ind.lengkap + '</small></td>' +
-        '<td class="num" data-label="Nilai">' + fmt(r.value, dec) + ' ' + r.ind.satuan + '</td>' +
+        '<td class="num" data-label="Nilai">' + fmt(r.value, dec) + ' ' + r.ind.satuan + med + '</td>' +
         '<td class="num' + (zFirst ? ' key' : '') + '" data-label="Z-score">' + zTxt + '</td>' +
         '<td class="num' + (zFirst ? '' : ' key') + '" data-label="Persentil">' + pTxt + '</td>' +
         '<td class="klas"><span class="chip ' + r.klas.c + '">' + esc(r.klas.t) + '</span>' + extra + '</td></tr>';
@@ -91,7 +93,7 @@
 
   var FOOT = {
     who: 'Hasil utama memakai standar WHO 2006 dengan klasifikasi Permenkes No. 2 Tahun 2020 (z-score). Indikator berbasis berat memakai z-score terbatas WHO untuk nilai di luar ±3 SD.',
-    cdc: 'Hasil utama memakai CDC 2000. Klasifikasi IMT/U mengikuti CDC (&lt;P5 gizi kurang, P5–&lt;P85 normal, P85–&lt;P95 gizi lebih, ≥P95 obesitas, ≥120% P95 obesitas berat).'
+    cdc: 'Hasil utama memakai CDC 2000. TB/U: &lt;P3 pendek (IDAI). IMT/U mengikuti CDC (&lt;P5 gizi kurang, P5–&lt;P85 normal, P85–&lt;P95 gizi lebih, ≥P95 obesitas, ≥120% P95 obesitas berat). % median = nilai anak ÷ median (P50) CDC untuk umurnya, untuk dicocokkan dengan hitungan manual.'
   };
 
   function render(s) {

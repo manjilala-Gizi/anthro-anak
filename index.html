@@ -176,7 +176,7 @@
         <ol>
           <li><b>Isi identitas anak.</b> Nama dan No. RM boleh dikosongkan; keduanya hanya dicetak di laporan.</li>
           <li><b>Pilih jenis kelamin.</b> Hasil sangat dipengaruhi pilihan ini, jadi pastikan benar.</li>
-          <li><b>Isi tanggal lahir dan tanggal ukur.</b> Tanggal ukur otomatis terisi hari ini; ubah bila data diukur di hari lain. Umur dihitung sampai hitungan hari.</li>
+          <li><b>Isi tanggal lahir dan tanggal ukur dengan tepat.</b> Tanggal ukur otomatis terisi hari ini; ubah bila data diukur di hari lain. Umur dihitung sampai hitungan hari, jadi <b>jangan membulatkan umur ke tahun</b>: selisih 3–6 bulan dapat mengubah kategori anak yang berada di dekat garis batas. Bila tanggal lahir pasti tidak diketahui, catat hal itu bersama hasilnya.</li>
           <li><b>Isi berat badan (kg) dan panjang/tinggi badan (cm).</b> Gunakan titik atau koma untuk desimal, misalnya 8.2 atau 74,5.</li>
           <li><b>Pilih cara ukur</b> sesuai kenyataan di lapangan: berbaring (panjang badan) atau berdiri (tinggi badan). Aplikasi akan mengoreksi otomatis bila cara ukur tidak sesuai umur.</li>
           <li><b>Lingkar kepala</b> diisi bila diukur, terutama untuk balita.</li>
@@ -206,6 +206,9 @@
           <li><b>Persentil</b> menunjukkan posisi anak dibanding 100 anak seusianya. Persentil 10 berarti 10% anak berada di bawahnya.</li>
           <li>Untuk <b>balita (WHO)</b>, klasifikasi dibaca dari z-score. Untuk <b>anak ≥ 5 tahun (CDC)</b>, klasifikasi dibaca dari persentil. Kolom yang dipakai untuk klasifikasi dicetak tebal.</li>
           <li><b>Warna label:</b> <span class="chip ok">hijau</span> normal, <span class="chip warn">kuning</span> perlu perhatian, <span class="chip bad">merah</span> masalah gizi, <span class="chip info">biru</span> informasi (misalnya tinggi di atas normal).</li>
+          <li><b>% median</b> (khusus CDC) adalah nilai anak dibagi median seusianya, sama seperti hitungan manual (misalnya TB 130 ÷ 142,3 = 91,4%). Gunakan untuk mencocokkan dengan catatan manual; kategori tetap dibaca dari persentil.</li>
+          <li><b>Batas TB/U pada CDC</b> adalah &lt; P3 (pendek), mengikuti IDAI. Pada WHO, batasnya &lt; −2 SD (Permenkes).</li>
+          <li>Tanda <b class="near-ex">◆ Dekat batas klasifikasi</b> muncul bila nilai anak hanya ±0,1 SD dari garis batas. Periksa ulang pengukuran dan umur; hasil pada zona ini bisa berbeda dengan cara manual.</li>
           <li><b>%BB ideal (%BBI)</b> membandingkan berat aktual dengan berat median anak setinggi itu. Kategorinya: &lt;70% gizi buruk, 70–&lt;90% gizi kurang, 90–110% gizi baik, &gt;110–120% overweight, &gt;120% obesitas.</li>
           <li><b>Grafik pertumbuhan</b> menampilkan titik anak (bulatan kuning) di antara garis referensi. Garis hijau tebal adalah median; garis merah adalah batas −2/+2 SD (WHO) atau P5/P95 (CDC).</li>
           <li>Bila muncul <b>catatan kuning</b> tentang z-score di luar ±5 SD, periksa ulang tanggal lahir, satuan, dan hasil pengukuran.</li>

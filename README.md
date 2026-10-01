@@ -65,7 +65,7 @@ Setiap kali ada file yang diubah, naikkan nomor `VERSION` di `sw.js` (misalnya `
 | Indeks | Klasifikasi CDC 2000 |
 |---|---|
 | IMT/U | < P5 gizi kurang · P5–< P85 normal · P85–< P95 gizi lebih · ≥ P95 obesitas · ≥ 120% P95 obesitas berat |
-| TB/U, PB/U | < P5 pendek |
+| TB/U, PB/U | < P3 pendek (rekomendasi IDAI); > P97 tinggi |
 | BB/PB, BB/TB | < P5 kurus · ≥ P95 gemuk |
 | %BBI | < 70% gizi buruk · 70–< 90% gizi kurang · 90–110% gizi baik · > 110–120% overweight · > 120% obesitas |
 

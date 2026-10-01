@@ -233,3 +233,9 @@ img { max-width: 100%; }
 .acc .chip.bad { background: #fde0dc; color: #8e1c12; } .acc .chip.info { background: #dcecf8; color: #164b73; }
 .guide-credit { margin: 18px 0 0; font-size: .85rem; color: var(--muted); }
 @media print { .guide, .welcome { display: none !important; } }
+
+.tbl td.num small.muted { display: block; font-family: var(--font); font-size: .72rem; color: var(--p-muted); margin-top: 2px; }
+.tbl small.near { display: block; margin-top: 4px; font-size: .72rem; color: #8a5a00; font-weight: 600; }
+.tbl small.near::before { content: "◆ "; }
+.acc .near-ex { color: #8a5a00; }
+.tbl th { white-space: nowrap; }

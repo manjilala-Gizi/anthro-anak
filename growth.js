@@ -113,7 +113,8 @@
     if (p >= 5) return { t: 'Normal (P5–<P85)', c: 'ok' };
     return { t: 'Gizi kurang / underweight (<P5)', c: 'bad' };
   }
-  function kCdcTB(p) { return p < 5 ? { t: 'Pendek (<P5)', c: 'warn' } : p > 95 ? { t: 'Tinggi (>P95)', c: 'info' } : { t: 'Normal (P5–P95)', c: 'ok' }; }
+  // TB/U CDC: batas perawakan pendek < P3 (setara ±−2 SD), mengikuti rekomendasi IDAI
+  function kCdcTB(p) { return p < 3 ? { t: 'Pendek (<P3)', c: 'warn' } : p > 97 ? { t: 'Tinggi (>P97)', c: 'info' } : { t: 'Normal (P3–P97)', c: 'ok' }; }
   function kCdcBBU(p) { return p < 5 ? { t: 'BB kurang (<P5)', c: 'warn' } : p > 95 ? { t: 'BB lebih (>P95)', c: 'warn' } : { t: 'Sesuai umur (P5–P95)', c: 'ok' }; }
   function kCdcBBTB(p) { return p < 5 ? { t: 'Kurus, risiko gizi kurang (<P5)', c: 'bad' } : p >= 95 ? { t: 'Gemuk, risiko gizi lebih (≥P95)', c: 'warn' } : { t: 'Normal (P5–<P95)', c: 'ok' }; }
   function kCdcLK(p) { return p < 5 ? { t: 'Di bawah P5, perlu evaluasi', c: 'warn' } : p > 95 ? { t: 'Di atas P95, perlu evaluasi', c: 'warn' } : { t: 'Normal (P5–P95)', c: 'ok' }; }
@@ -179,12 +180,24 @@
 
   /* ---------- pembuat hasil ---------- */
   function newResult(ref) { return { ref: REF[ref], rows: [], charts: [], notes: [], bbi: null }; }
+  // Titik potong (dalam z) tiap indikator, untuk penanda "dekat batas"
+  var P3 = 1.880794, P5 = 1.644854, P85 = 1.036433;
+  var CUTS = {
+    'cdc:wfa_inf': [-P5, P5], 'cdc:wfa': [-P5, P5], 'cdc:lfa_inf': [-P3, P3], 'cdc:hfa': [-P3, P3],
+    'cdc:wfl': [-P5, P5], 'cdc:wfs': [-P5, P5], 'cdc:bmi': [-P5, P85, P5], 'cdc:hcfa': [-P5, P5],
+    'who:wfa': [-3, -2, 1], 'who:lfa': [-3, -2, 3], 'who:hfa': [-3, -2, 3], 'who:wfl': [-3, -2, 1, 2, 3],
+    'who:wfh': [-3, -2, 1, 2, 3], 'who:bmi': [-3, -2, 1, 2, 3], 'who:hcfa': [-2, 2],
+    'w07:hfa': [-3, -2, 3], 'w07:wfa': [-3, -2, 1], 'w07:bmi': [-3, -2, 1, 2]
+  };
+  var NEAR = 0.1; // ±0,1 SD
+
   function addRow(out, key, value, lms, zfun, klas, chart, extra) {
     var row = { key: key, ind: IND[key], value: value, res: null, klas: null, extra: extra || null };
     if (lms) {
       var z = zfun(value, lms[0], lms[1], lms[2]);
       if (out.ref.skala === 'z') z = round2(z);
-      row.res = { z: z, p: normCdf(z) * 100, median: lms[1] };
+      row.res = { z: z, p: normCdf(z) * 100, median: lms[1], pctMed: value / lms[1] * 100 };
+      row.near = (CUTS[key] || []).some(function (c) { return Math.abs(z - c) < NEAR; });
       row.klas = klas(out.ref.skala === 'z' ? z : row.res.p, row.res);
       if (Math.abs(z) > 5) out.notes.push(IND[key].nama + ' (' + out.ref.nama + ') memiliki z-score ' + fmt(z, 2) + ', di luar ±5 SD. Periksa ulang pengukuran dan tanggal.');
       if (chart) out.charts.push(chart);
