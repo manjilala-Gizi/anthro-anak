@@ -115,6 +115,15 @@
     </div>
 
     <!-- Lembar laporan: selalu bernuansa kertas putih agar hasil cetak konsisten -->
+    <div class="panel ringkas">
+      <div class="ringkas-head">
+        <h2>Ringkasan untuk rekam medis</h2>
+        <button type="button" id="btnSalin" class="btn btn-primary small">Salin ringkasan</button>
+      </div>
+      <p class="ringkas-sub">Tempel di kolom Assessment Gizi SIMRS. Formatnya mengikuti catatan manual: nilai ÷ median × 100%, ditambah persentil/z-score sebagai dasar klasifikasi.</p>
+      <textarea id="ringkasan" rows="6" readonly aria-label="Ringkasan status gizi"></textarea>
+    </div>
+
     <article id="report" class="paper">
       <div class="paper-head">
         <img src="logo-poltekkes-makassar.png" alt="Logo Kemenkes Poltekkes Makassar">

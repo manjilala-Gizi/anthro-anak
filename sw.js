@@ -2,7 +2,7 @@
    Strategi: ambil versi terbaru dari internet lebih dulu (network-first);
    salinan tersimpan hanya dipakai saat HP tidak tersambung internet.
    Naikkan VERSION setiap kali ada perubahan file. */
-const VERSION = 'antro-anak-v2.7.0';
+const VERSION = 'antro-anak-v2.8.0';
 const FILES = [
   './', 'index.html', 'manifest.json', 'style.css',
   'cdc2000-data.js', 'who-data.js', 'growth.js', 'app.js',

@@ -145,6 +145,45 @@
     cdc: 'Hasil utama memakai CDC 2000. TB/U: &lt;P3 pendek (IDAI). IMT/U mengikuti CDC (&lt;P5 gizi kurang, P5–&lt;P85 normal, P85–&lt;P95 gizi lebih, ≥P95 obesitas, ≥120% P95 obesitas berat). % median = nilai anak ÷ median (P50) CDC untuk umurnya, untuk dicocokkan dengan hitungan manual.'
   };
 
+  /* ===== Ringkasan teks untuk SIMRS ===== */
+  function shortKlas(t) { return t.replace(/\s*\([^)]*\)\s*$/, ''); }
+  function ringkasan(s) {
+    var P = s.res.primary, inp = s.inp, L = [];
+    var bbiRow = P.bbi;
+    L.push('Status Gizi (' + P.ref.nama + '):');
+    var order = P.ref.id === 'cdc' ? ['BB/U', 'TB/U', 'PB/U', 'BB/TB', 'BB/PB', 'IMT/U', 'LK/U'] : ['BB/U', 'PB/U', 'TB/U', 'BB/PB', 'BB/TB', 'IMT/U', 'LK/U'];
+    var rows = P.rows.slice().sort(function (a, b) { return order.indexOf(a.ind.nama) - order.indexOf(b.ind.nama); });
+    var bbtbDone = false;
+    rows.forEach(function (r) {
+      var a = r.res, n = r.ind.nama, k = shortKlas(r.klas.t), sat = r.ind.satuan === 'kg/m²' ? ' kg/m²' : '';
+      if (!a) { L.push(n + ' = ' + r.klas.t); return; }
+      var dec = r.ind.satuan === 'kg' ? 1 : 1, extra = r.near ? ', dekat batas' : '';
+      if (P.ref.id === 'cdc') {
+        var pTxt = 'P' + (a.p < 0.1 ? '<0,1' : a.p > 99.9 ? '>99,9' : fmt(a.p, 1));
+        if (n === 'IMT/U') L.push('IMT/U = ' + fmt(r.value, 1) + ' kg/m² (' + pTxt + '; ' + k + extra + ')');
+        else if (n === 'BB/TB' || n === 'BB/PB') { /* ditampilkan lewat %BBI */ }
+        else L.push(n + ' = ' + fmt(r.value, dec) + '/' + fmt(a.median, 1) + ' x100% = ' + fmt(a.pctMed, 1) + '% (' + pTxt + '; ' + k + extra + ')');
+      } else {
+        L.push(n + ' = ' + fmt(r.value, dec) + (sat || (' ' + r.ind.satuan)) + ' (z ' + (a.z >= 0 ? '+' : '−') + fmt(Math.abs(a.z), 2) + '; ' + k + extra + ')');
+      }
+    });
+    if (bbiRow) {
+      var lab = P.ref.id === 'cdc' ? (P.set.indexOf('0–36') >= 0 ? 'BB/PB' : 'BB/TB') : '%BBI (BB/' + (P.set.indexOf('0–2') >= 0 ? 'PB' : 'TB') + ')';
+      var line = lab + ' = ' + fmt(inp.bb, 1) + '/' + fmt(bbiRow.ideal, 1) + ' x100% = ' + fmt(bbiRow.pct, 1) + '% (' + bbiRow.klas.t + ')';
+      var at = -1; L.forEach(function (x, i) { if (x.indexOf('IMT/U') === 0) at = i; });
+      if (P.ref.id === 'cdc' && at > 0) L.splice(at, 0, line); else L.push(line);
+    }
+    L.push('BB ' + fmt(inp.bb, 1) + ' kg, ' + (inp.cara === 'baring' ? 'PB ' : 'TB ') + fmt(inp.tb, 1) + ' cm, umur ' + s.res.ageParts.y + ' th ' + s.res.ageParts.m + ' bln ' + s.res.ageParts.d + ' hr' + (bbiRow ? ', BBI ' + fmt(bbiRow.ideal, 1) + ' kg' : '') + '.');
+    L.push('Sumber: AntroAnak (' + P.ref.nama + ')');
+    return L.join('\n');
+  }
+  $('btnSalin').addEventListener('click', function () {
+    var ta = $('ringkasan'), txt = ta.value;
+    function fallback() { ta.focus(); ta.select(); try { document.execCommand('copy'); toast('Ringkasan tersalin. Tempel di SIMRS.'); } catch (e) { toast('Tekan lama teks lalu pilih Salin.'); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function () { toast('Ringkasan tersalin. Tempel di SIMRS.'); }, fallback);
+    else fallback();
+  });
+
   function render(s) {
     var inp = s.inp, res = s.res, P = res.primary, C = res.comparator, ap = res.ageParts;
     var umur = ap.y + ' th ' + ap.m + ' bln ' + ap.d + ' hr';
@@ -182,6 +221,7 @@
       $('cmpNotes').innerHTML = C.notes.map(esc).join('<br>');
     }
     $('footNote').innerHTML = '<b>Catatan:</b> ' + FOOT[P.ref.id] + ' %BBI diklasifikasikan menurut kriteria Waterlow sesuai rekomendasi IDAI. Hasil ini alat bantu skrining dan tidak menggantikan penilaian klinis.';
+    $('ringkasan').value = ringkasan(s);
     $('printedAt').textContent = 'Dicetak ' + new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
   }
 
