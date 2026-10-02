@@ -27,6 +27,13 @@
 </header>
 
 <main class="wrap">
+  <div id="restored" class="welcome restored" hidden>
+    <p><b>Data terakhir dipulihkan.</b> <span id="restoredInfo"></span></p>
+    <div class="welcome-actions">
+      <button type="button" id="btnRestoredOk" class="btn btn-primary small">Lanjutkan</button>
+      <button type="button" id="btnRestoredClear" class="btn btn-ghost small">Mulai baru</button>
+    </div>
+  </div>
   <div id="welcome" class="welcome" hidden>
     <p><b>Baru pertama kali memakai AntroAnak?</b> Baca panduan singkatnya dulu, sekitar 2 menit.</p>
     <div class="welcome-actions">
@@ -189,7 +196,7 @@
           <li><b>Umur &lt; 5 tahun:</b> WHO 2006, klasifikasi Permenkes No. 2 Tahun 2020 (z-score).</li>
           <li><b>Umur ≥ 5 tahun:</b> CDC 2000, klasifikasi persentil CDC.</li>
         </ul>
-        <p>Semua perhitungan berlangsung di HP. Data anak tidak dikirim ke server mana pun dan tidak disimpan setelah halaman ditutup.</p>
+        <p>Semua perhitungan berlangsung di HP. Data anak tidak dikirim ke server mana pun. Isian terakhir hanya disimpan sementara di HP ini (maksimal 24 jam) agar tidak hilang bila halaman ter-refresh.</p>
       </div>
     </details>
 
@@ -256,7 +263,7 @@
           <li><b>Bagikan:</b> langsung kirim JPG ke WhatsApp atau aplikasi lain. Tombol ini hanya muncul di HP yang mendukung.</li>
           <li><b>Cetak:</b> kirim ke printer, atau pilih "Simpan sebagai PDF" di menu cetak.</li>
         </ul>
-        <p class="tip">Karena data tidak disimpan di aplikasi, unduh atau bagikan hasil sebelum menutup halaman.</p>
+        <p class="tip">Isian tersimpan otomatis di HP ini. Bila halaman tidak sengaja ter-refresh atau tertutup, data dan hasil akan dipulihkan saat aplikasi dibuka lagi. Draf terhapus saat menekan <b>Kosongkan</b> atau otomatis setelah 24 jam. Pada HP yang dipakai bersama, tekan <b>Kosongkan</b> setelah selesai.</p>
       </div>
     </details>
 

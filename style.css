@@ -262,3 +262,7 @@ img { max-width: 100%; }
 .ringkas textarea { width: 100%; box-sizing: border-box; font: .86rem/1.55 var(--mono); color: var(--fg); background: var(--bg);
   border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; resize: vertical; white-space: pre; overflow-x: auto; }
 @media print { .ringkas { display: none !important; } }
+
+/* Cegah tarik-ke-bawah untuk refresh (Chrome Android) */
+html, body { overscroll-behavior-y: contain; }
+.restored { background: color-mix(in srgb, var(--lime) 22%, var(--surface)); }

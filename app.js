@@ -79,6 +79,7 @@
   $('btnContohAnak').addEventListener('click', function () { contoh({ nama: 'Contoh: Andi', norm: 'RM-000123', jk: 'm', bulan: 100, bb: '34.5', tb: '128.0', cara: 'berdiri' }); });
 
   $('form').addEventListener('reset', function () {
+    clearDraft(); $('restored').hidden = true;
     setTimeout(function () { setDate('tglLahir', ''); setDate('tglUkur', todayISO()); $('hasil').hidden = true; $('formMsg').hidden = true; }, 0);
   });
 
@@ -102,6 +103,7 @@
     if (res && res.errors.length) msg = msg.concat(res.errors);
     if (msg.length) { $('formMsg').textContent = msg.join(' '); $('formMsg').hidden = false; $('hasil').hidden = true; return; }
     $('formMsg').hidden = true;
+    saveDraft(true);
     last = { inp: inp, res: res, nama: $('nama').value.trim(), norm: $('norm').value.trim(), petugas: $('petugas').value.trim() };
     render(last);
     $('hasil').hidden = false;
@@ -370,6 +372,45 @@
   $('btnWelcomeOpen').addEventListener('click', function () { seen(); openGuide(); });
   $('btnWelcomeClose').addEventListener('click', seen);
   try { if (!localStorage.getItem('antroanak-panduan')) $('welcome').hidden = false; } catch (e) { $('welcome').hidden = false; }
+
+  /* ===== Simpan otomatis (draf) =====
+     Isian disimpan di HP ini saja agar tidak hilang saat halaman ter-refresh.
+     Draf terhapus saat tombol Kosongkan ditekan, dan kedaluwarsa setelah 24 jam. */
+  var DKEY = 'antroanak-draf', DMAX = 24 * 3600 * 1000;
+  var FIELDS = ['nama', 'norm', 'tglLahir_d', 'tglLahir_m', 'tglLahir_y', 'tglUkur_d', 'tglUkur_m', 'tglUkur_y', 'bb', 'tb', 'lk', 'petugas'];
+  function saveDraft(computed) {
+    try {
+      var d = { t: Date.now(), v: {}, jk: document.querySelector('input[name="jk"]:checked').value,
+        cara: document.querySelector('input[name="cara"]:checked').value, cmp: $('pembanding').checked };
+      var prev = JSON.parse(localStorage.getItem(DKEY) || 'null');
+      d.computed = computed === undefined ? !!(prev && prev.computed && !$('hasil').hidden) : computed;
+      FIELDS.forEach(function (f) { d.v[f] = $(f).value; });
+      var any = FIELDS.some(function (f) { return f !== 'tglUkur_d' && f !== 'tglUkur_m' && f !== 'tglUkur_y' && d.v[f]; });
+      if (any) localStorage.setItem(DKEY, JSON.stringify(d)); else localStorage.removeItem(DKEY);
+    } catch (e) {}
+  }
+  function clearDraft() { try { localStorage.removeItem(DKEY); } catch (e) {} }
+  function loadDraft() {
+    var d; try { d = JSON.parse(localStorage.getItem(DKEY) || 'null'); } catch (e) { return; }
+    if (!d || !d.v) return;
+    if (Date.now() - d.t > DMAX) { clearDraft(); return; }
+    FIELDS.forEach(function (f) { if (d.v[f] != null) $(f).value = d.v[f]; });
+    $(d.jk === 'f' ? 'jkP' : 'jkL').checked = true;
+    $(d.cara === 'baring' ? 'caraBaring' : 'caraBerdiri').checked = true;
+    $('pembanding').checked = !!d.cmp;
+    refreshDates();
+    var tm = new Date(d.t).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+    $('restoredInfo').textContent = (d.v.nama ? d.v.nama + ' · ' : '') + 'disimpan ' + tm + '. Data hanya tersimpan di HP ini.';
+    $('restored').hidden = false;
+    if (d.computed && $('tglLahir').value && $('tglUkur').value && $('bb').value && $('tb').value) {
+      setTimeout(function () { $('form').requestSubmit(); $('restored').scrollIntoView({ block: 'start' }); }, 50);
+    }
+  }
+  $('form').addEventListener('input', function () { saveDraft(); });
+  $('form').addEventListener('change', function () { saveDraft(); });
+  $('btnRestoredOk').addEventListener('click', function () { $('restored').hidden = true; });
+  $('btnRestoredClear').addEventListener('click', function () { $('restored').hidden = true; $('form').reset(); });
+  loadDraft();
 
   /* ===== PWA ===== */
   var deferred = null;
