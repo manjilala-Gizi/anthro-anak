@@ -115,7 +115,7 @@
   }
   // TB/U CDC: batas perawakan pendek < P3 (setara ±−2 SD), mengikuti rekomendasi IDAI
   function kCdcTB(p) { return p < 3 ? { t: 'Pendek (<P3)', c: 'warn' } : p > 97 ? { t: 'Tinggi (>P97)', c: 'info' } : { t: 'Normal (P3–P97)', c: 'ok' }; }
-  function kCdcBBU(p) { return p < 5 ? { t: 'BB kurang (<P5)', c: 'warn' } : p > 95 ? { t: 'BB lebih (>P95)', c: 'warn' } : { t: 'Sesuai umur (P5–P95)', c: 'ok' }; }
+  function kCdcBBU(p) { return p < 5 ? { t: 'BB kurang (<P5)', c: 'warn' } : p > 95 ? { t: 'BB lebih (>P95)', c: 'warn' } : { t: 'Normal (P5–P95)', c: 'ok' }; }
   function kCdcBBTB(p) { return p < 5 ? { t: 'Kurus, risiko gizi kurang (<P5)', c: 'bad' } : p >= 95 ? { t: 'Gemuk, risiko gizi lebih (≥P95)', c: 'warn' } : { t: 'Normal (P5–<P95)', c: 'ok' }; }
   function kCdcLK(p) { return p < 5 ? { t: 'Di bawah P5, perlu evaluasi', c: 'warn' } : p > 95 ? { t: 'Di atas P95, perlu evaluasi', c: 'warn' } : { t: 'Normal (P5–P95)', c: 'ok' }; }
   // Permenkes No. 2 Tahun 2020 (z-score)
